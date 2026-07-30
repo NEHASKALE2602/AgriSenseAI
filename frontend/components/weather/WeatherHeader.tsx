@@ -1,153 +1,237 @@
 "use client";
 
+import { motion } from "framer-motion";
 import {
-  Droplets,
-  Wind,
-  SunMedium,
-  Activity,
+  Sparkles,
+  MapPin,
 } from "lucide-react";
 
-const highlights = [
-  {
-    icon: Droplets,
-    label: "Humidity",
-    value: "68%",
-    color: "text-cyan-300",
-  },
-  {
-    icon: Wind,
-    label: "Wind",
-    value: "14 km/h",
-    color: "text-green-300",
-  },
-  {
-    icon: SunMedium,
-    label: "UV Index",
-    value: "7 High",
-    color: "text-yellow-300",
-  },
-  {
-    icon: Activity,
-    label: "Air Quality",
-    value: "AQI 42",
-    color: "text-purple-300",
-  },
-];
-
-export default function WeatherHighlights() {
+export default function WeatherHeader() {
   return (
-    <section className="mt-6">
+    <section className="relative px-8 pt-6 pb-10">
 
-      <div
-        className="
-          rounded-[28px]
-          border
-          border-white/10
-          bg-black/20
-          backdrop-blur-3xl
+      {/* Background Glow */}
 
-          px-10
-          py-7
-        "
-      >
+      <div className="absolute inset-0 pointer-events-none">
 
-        <div
-          className="
-            grid
-            grid-cols-4
-            gap-8
-          "
-        >
-                      {highlights.map((item) => {
+        <div className="absolute -top-20 left-0 h-[280px] w-[280px] rounded-full bg-yellow-400/10 blur-[140px]" />
 
-            const Icon = item.icon;
-
-            return (
-
-              <div
-                key={item.label}
-                className="
-                  group
-                  flex
-                  items-center
-                  gap-5
-
-                  transition-all
-                  duration-300
-
-                  hover:scale-[1.02]
-                "
-              >
-
-                {/* Icon */}
-
-                <div
-                  className="
-                    h-14
-                    w-14
-
-                    rounded-2xl
-
-                    border
-                    border-white/10
-
-                    bg-white/[0.04]
-
-                    flex
-                    items-center
-                    justify-center
-
-                    transition-all
-                    duration-300
-
-                    group-hover:bg-white/[0.08]
-                  "
-                >
-
-                  <Icon
-                    size={26}
-                    className={`${item.color}`}
-                  />
-
-                </div>
-
-                {/* Text */}
-
-                <div>
-
-                  <p
-                    className="
-                      text-sm
-                      text-white/55
-                    "
-                  >
-                    {item.label}
-                  </p>
-
-                  <h3
-                    className="
-                      mt-1
-                      text-2xl
-                      font-bold
-                      text-white
-                    "
-                  >
-                    {item.value}
-                  </h3>
-
-                </div>
-
-              </div>
-
-            );
-
-          })}
-
-        </div>
+        <div className="absolute right-0 top-0 h-[240px] w-[240px] rounded-full bg-cyan-500/10 blur-[120px]" />
 
       </div>
 
-    </section>
+      <motion.div
+        initial={{
+          opacity: 0,
+          y: 40,
+        }}
+        animate={{
+          opacity: 1,
+          y: 0,
+        }}
+        transition={{
+          duration: 0.8,
+        }}
+        className="relative z-10 max-w-5xl"
+      >
 
+        {/* Badge */}
+
+        <div
+          className="
+            inline-flex
+            items-center
+            gap-3
+
+            rounded-full
+
+            border
+            border-yellow-400/20
+
+            bg-yellow-500/10
+
+            px-5
+            py-2
+
+            backdrop-blur-xl
+          "
+        >
+
+          <Sparkles
+            size={18}
+            className="text-yellow-300"
+          />
+
+          <span
+            className="
+              text-sm
+              font-semibold
+              uppercase
+              tracking-[0.30em]
+              text-yellow-200
+            "
+          >
+            Live Weather Engine
+          </span>
+
+        </div>
+
+        {/* Heading */}
+
+        <h1
+          className="
+            mt-8
+
+            text-7xl
+            font-black
+
+            leading-none
+
+            text-white
+          "
+        >
+
+          <span
+            className="
+              bg-gradient-to-r
+              from-yellow-300
+              via-orange-300
+              to-cyan-300
+
+              bg-clip-text
+              text-transparent
+            "
+          >
+            Weather Intelligence
+          </span>
+
+        </h1>
+
+        {/* Subtitle */}
+
+        <h2
+          className="
+            mt-7
+
+            text-3xl
+            font-semibold
+
+            text-white
+          "
+        >
+          Real-time Weather Monitoring &
+          AI-Powered Farming Advisory
+        </h2>
+
+        {/* Description */}
+
+        <p
+          className="
+            mt-6
+
+            max-w-4xl
+
+            text-xl
+
+            leading-9
+
+            text-white/90
+          "
+        >
+          Monitor live weather conditions, receive AI-powered
+          climate analysis, and get intelligent farming
+          recommendations for irrigation, spraying,
+          harvesting and crop protection.
+        </p>
+
+        {/* Bottom Info */}
+
+        <div className="mt-10 flex flex-wrap gap-5">
+
+          {/* Location */}
+
+          <div
+            className="
+              flex
+              items-center
+              gap-3
+
+              rounded-full
+
+              border
+              border-cyan-400/20
+
+              bg-cyan-500/10
+
+              px-5
+              py-3
+
+              backdrop-blur-xl
+            "
+          >
+
+            <MapPin
+              size={18}
+              className="text-cyan-300"
+            />
+
+            <span className="text-white">
+              Pune, Maharashtra
+            </span>
+
+          </div>
+
+          {/* AI Status */}
+
+          <div
+            className="
+              flex
+              items-center
+              gap-3
+
+              rounded-full
+
+              border
+              border-green-400/20
+
+              bg-green-500/10
+
+              px-5
+              py-3
+
+              backdrop-blur-xl
+            "
+          >
+
+            <div
+              className="
+                h-3
+                w-3
+
+                rounded-full
+
+                bg-green-400
+
+                animate-pulse
+              "
+            />
+
+            <span
+              className="
+                font-semibold
+
+                text-green-300
+              "
+            >
+              AI Forecast Active
+            </span>
+
+          </div>
+
+        </div>
+
+      </motion.div>
+
+    </section>
   );
 }

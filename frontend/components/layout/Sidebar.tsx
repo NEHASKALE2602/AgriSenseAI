@@ -59,7 +59,7 @@ const menuGroups = [
       {
         icon: IndianRupee,
         label: "Market Prices",
-        href: "/market-prices",
+        href: "/market-price",
       },
       {
         icon: Newspaper,
