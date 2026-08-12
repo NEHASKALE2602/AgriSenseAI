@@ -1,31 +1,14 @@
-# Python
-venv/
-__pycache__/
-*.pyc
+# Large AI models
+*.pt
+*.pth
 
-# Environment
-.env
-.env.*
-!.env.example
+# AI training outputs
+ai_models/disease_detection/runs/
 
-# Frontend
-frontend/node_modules/
-frontend/.next/
-frontend/out/
+# Node
+node_modules/
 
-# Logs
-*.log
-
-# ML models
-ai_models/saved_models/*.pkl
-ai_models/saved_models/*.pt
-
-# Datasets
-ai_models/datasets/
-
-# OS
-.DS_Store
-Thumbs.db
-
-# VS Code
-.vscode/
+# Local test files
+test_gemini.py
+test_weather.py
+package.json.backup
