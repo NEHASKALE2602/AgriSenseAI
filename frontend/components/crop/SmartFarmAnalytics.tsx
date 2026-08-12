@@ -8,7 +8,13 @@ import {
 } from "lucide-react";
 import CircularProgress from "@/components/ui/CircularProgress";
 
-export default function SmartFarmAnalytics() {
+type SmartFarmAnalyticsProps = {
+  prediction: any;
+};
+
+export default function SmartFarmAnalytics({
+  prediction,
+}: SmartFarmAnalyticsProps) {
   return (
     <section className="mt-14">
 
@@ -32,8 +38,8 @@ export default function SmartFarmAnalytics() {
 
         {/* Expected Yield */}
 
-<div
-  className="
+        <div
+          className="
     rounded-[30px]
     border
     border-white/10
@@ -49,16 +55,16 @@ export default function SmartFarmAnalytics() {
     transition-all
     duration-500
   "
->
+        >
 
-  <CircularProgress
-    value={58}
-    title="Expected Yield"
-    subtitle="5.8 Tons / Hectare"
-    color="#43A047"
-  />
+          <CircularProgress
+            value={80}
+            title="Expected Yield"
+            subtitle={prediction.expected_yield}
+            color="#43A047"
+          />
 
-</div>
+        </div>
 
         {/* Profit */}
 
@@ -80,7 +86,7 @@ export default function SmartFarmAnalytics() {
           />
 
           <h2 className="mt-6 text-5xl font-black text-white">
-            ₹1.25L
+            {prediction.expected_profit}
           </h2>
 
           <p className="mt-2 text-white/60">
@@ -91,8 +97,8 @@ export default function SmartFarmAnalytics() {
 
         {/* AI Confidence */}
 
-<div
-  className="
+        <div
+          className="
     rounded-[30px]
     border
     border-white/10
@@ -108,16 +114,16 @@ export default function SmartFarmAnalytics() {
     transition-all
     duration-500
   "
->
+        >
 
-  <CircularProgress
-    value={96}
-    title="AI Confidence"
-    subtitle="Recommendation Accuracy"
-    color="#22C55E"
-  />
+          <CircularProgress
+            value={prediction.confidence}
+            title="AI Confidence"
+            subtitle="Prediction Confidence"
+            color="#22C55E"
+          />
 
-</div>
+        </div>
       </div>
 
       {/* Bottom Stats */}
@@ -127,23 +133,23 @@ export default function SmartFarmAnalytics() {
         {[
           {
             icon: Droplets,
-            title: "Water Usage",
-            value: "Medium",
+            title: "Water Requirement",
+            value: prediction.water_requirement,
           },
           {
             icon: CalendarDays,
             title: "Growing Days",
-            value: "120 Days",
+            value: prediction.growth_duration,
           },
           {
             icon: Leaf,
-            title: "Sustainability",
-            value: "92%",
+            title: "Risk Level",
+            value: prediction.risk_level,
           },
           {
             icon: TrendingUp,
-            title: "Market Trend",
-            value: "Rising",
+            title: "AI Confidence",
+            value: `${prediction.confidence}%`,
           },
         ].map((item) => {
 

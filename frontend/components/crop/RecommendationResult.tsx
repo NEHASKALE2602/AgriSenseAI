@@ -7,7 +7,13 @@ import {
   Sparkles,
 } from "lucide-react";
 
-export default function RecommendationResult() {
+type RecommendationResultProps = {
+  prediction: any;
+};
+
+export default function RecommendationResult({
+  prediction,
+}: RecommendationResultProps) {
   return (
     <section className="mt-10">
 
@@ -71,8 +77,8 @@ export default function RecommendationResult() {
           <div className="flex justify-center">
 
             <img
-              src="/images/rice.png"
-              alt="Rice"
+              src={`/images/${prediction.recommended_crop.toLowerCase()}.png`}
+              alt={prediction.recommended_crop}
               className="
                 w-56
                 drop-shadow-[0_20px_50px_rgba(0,0,0,.45)]
@@ -119,7 +125,7 @@ export default function RecommendationResult() {
                 text-white
               "
             >
-              Rice
+              {prediction.recommended_crop}
             </h2>
 
             <p
@@ -135,10 +141,7 @@ export default function RecommendationResult() {
                 text-white/70
               "
             >
-              Rice is the best crop for your current farm
-              conditions because the soil nutrients,
-              humidity, rainfall and temperature closely
-              match the optimal growing requirements.
+              {prediction.recommended_crop} is the top crop predicted by the machine-learning model for the provided farm conditions, with a confidence level of {prediction.confidence}%. This recommendation is based on an analysis of soil health, climate conditions, and market demand, ensuring that it aligns with both environmental and economic factors for optimal farming decisions.
             </p>
 
             {/* Badges */}
@@ -159,7 +162,7 @@ export default function RecommendationResult() {
                   font-semibold
                 "
               >
-                98% Match
+                {prediction.confidence}% Match
               </div>
 
               <div
@@ -176,7 +179,7 @@ export default function RecommendationResult() {
                   font-semibold
                 "
               >
-                High Profit
+                {prediction.expected_profit}
               </div>
 
               <div
@@ -193,7 +196,7 @@ export default function RecommendationResult() {
                   font-semibold
                 "
               >
-                Low Risk
+                {prediction.risk_level} Risk
               </div>
 
             </div>
@@ -225,7 +228,7 @@ export default function RecommendationResult() {
                   </h4>
 
                   <p className="text-white/60 text-sm">
-                    Excellent
+                    {prediction.confidence}%
                   </p>
 
                 </div>
@@ -245,7 +248,7 @@ export default function RecommendationResult() {
                   </h4>
 
                   <p className="text-white/60 text-sm">
-                    Very High
+                    {prediction.expected_profit}
                   </p>
 
                 </div>
@@ -265,7 +268,7 @@ export default function RecommendationResult() {
                   </h4>
 
                   <p className="text-white/60 text-sm">
-                    Low
+                    {prediction.risk_level}
                   </p>
 
                 </div>

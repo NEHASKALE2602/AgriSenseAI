@@ -2,28 +2,15 @@
 
 import { ArrowUpRight } from "lucide-react";
 
-const crops = [
-  {
-    name: "Maize",
-    match: "94%",
-    profit: "High",
-    image: "/images/maize.png",
-  },
-  {
-    name: "Wheat",
-    match: "91%",
-    profit: "Medium",
-    image: "/images/wheat.png",
-  },
-  {
-    name: "Cotton",
-    match: "88%",
-    profit: "High",
-    image: "/images/cotton.png",
-  },
-];
 
-export default function AlternativeCrops() {
+
+type AlternativeCropsProps = {
+  prediction: any;
+};
+
+export default function AlternativeCrops({
+  prediction,
+}: AlternativeCropsProps) {
   return (
     <section className="mt-10">
 
@@ -43,13 +30,15 @@ export default function AlternativeCrops() {
 
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-8">
+      <div className="grid lg:grid-cols-4 gap-8">
 
-        {crops.map((crop) => (
+        {prediction.top5_recommendations
+          .slice(1)
+          .map((crop: any, index: number) => (
 
-          <div
-            key={crop.name}
-            className="
+            <div
+              key={`${crop.crop}-${index}`}
+              className="
               group
 
               relative
@@ -74,12 +63,12 @@ export default function AlternativeCrops() {
               hover:border-green-400/25
               hover:shadow-[0_20px_45px_rgba(0,0,0,.28)]
             "
-          >
+            >
 
-            {/* Glow */}
+              {/* Glow */}
 
-            <div
-              className="
+              <div
+                className="
                 absolute
 
                 right-0
@@ -100,16 +89,16 @@ export default function AlternativeCrops() {
 
                 transition-all
               "
-            />
+              />
 
-            <div className="relative z-10">
+              <div className="relative z-10">
 
-              <div className="flex justify-center">
+                <div className="flex justify-center">
 
-                <img
-                  src={crop.image}
-                  alt={crop.name}
-                  className="
+                  <img
+                    src={`/images/${crop.crop.toLowerCase()}.png`}
+                    alt={crop.crop}
+                    className="
                     h-36
 
                     object-contain
@@ -119,12 +108,12 @@ export default function AlternativeCrops() {
 
                     group-hover:scale-110
                   "
-                />
+                  />
 
-              </div>
+                </div>
 
-              <h3
-                className="
+                <h3
+                  className="
                   mt-6
 
                   text-2xl
@@ -135,14 +124,14 @@ export default function AlternativeCrops() {
 
                   text-center
                 "
-              >
-                {crop.name}
-              </h3>
+                >
+                  {crop.crop}
+                </h3>
 
-              <div className="mt-5 flex justify-center gap-3">
+                <div className="mt-5 flex justify-center gap-3">
 
-                <span
-                  className="
+                  <span
+                    className="
                     rounded-full
 
                     bg-green-500/15
@@ -155,12 +144,12 @@ export default function AlternativeCrops() {
                     text-sm
                     font-semibold
                   "
-                >
-                  {crop.match} Match
-                </span>
+                  >
+                    {crop.confidence}% Match
+                  </span>
 
-                <span
-                  className="
+                  <span
+                    className="
                     rounded-full
 
                     bg-yellow-500/15
@@ -173,14 +162,14 @@ export default function AlternativeCrops() {
                     text-sm
                     font-semibold
                   "
-                >
-                  {crop.profit} Profit
-                </span>
+                  >
+                    AI Suggested
+                  </span>
 
-              </div>
+                </div>
 
-              <button
-                className="
+                <button
+                  className="
                   mt-8
 
                   w-full
@@ -206,19 +195,19 @@ export default function AlternativeCrops() {
 
                   hover:bg-white/[0.08]
                 "
-              >
+                >
 
-                View Details
+                  View Details
 
-                <ArrowUpRight size={18} />
+                  <ArrowUpRight size={18} />
 
-              </button>
+                </button>
+
+              </div>
 
             </div>
 
-          </div>
-
-        ))}
+          ))}
 
       </div>
 

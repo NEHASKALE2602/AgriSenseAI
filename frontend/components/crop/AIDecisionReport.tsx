@@ -10,66 +10,72 @@ import {
   FlaskConical,
 } from "lucide-react";
 
-const reports = [
-  {
-    icon: Sprout,
-    title: "Soil Compatibility",
-    value: "Excellent",
-    color: "text-green-400",
-    description:
-      "Nitrogen, Phosphorus and Potassium perfectly match Rice requirements.",
-  },
-  {
-    icon: CloudRain,
-    title: "Rainfall",
-    value: "Ideal",
-    color: "text-cyan-400",
-    description:
-      "Current rainfall falls within the optimum range for healthy growth.",
-  },
-  {
-    icon: ThermometerSun,
-    title: "Temperature",
-    value: "29°C",
-    color: "text-orange-300",
-    description:
-      "Temperature is suitable for maximum crop productivity.",
-  },
-  {
-    icon: Droplets,
-    title: "Water Requirement",
-    value: "Moderate",
-    color: "text-blue-400",
-    description:
-      "Water availability is sufficient throughout the growing season.",
-  },
-  {
-    icon: TrendingUp,
-    title: "Market Demand",
-    value: "Very High",
-    color: "text-emerald-400",
-    description:
-      "Current market trends indicate excellent demand and profitability.",
-  },
-  {
-    icon: FlaskConical,
-    title: "Fertilizer Advice",
-    value: "Balanced NPK",
-    color: "text-yellow-300",
-    description:
-      "Use balanced fertilizer during vegetative growth for higher yield.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Disease Risk",
-    value: "Low",
-    color: "text-purple-300",
-    description:
-      "Current environmental conditions indicate low disease probability.",
-  },
-];
 
-export default function AIDecisionReport() {
+type AIDecisionReportProps = {
+  prediction: any;
+};
+
+export default function AIDecisionReport({
+  prediction,
+}: AIDecisionReportProps) {
+  const reports = [
+    {
+      icon: Sprout,
+      title: "Recommended Crop",
+      value: prediction.recommended_crop,
+      color: "text-green-400",
+      description:
+        "AI selected the top crop predicted by the machine-learning model based on soil and weather conditions.",
+    },
+    {
+      icon: CloudRain,
+      title: "Water Requirement",
+      value: prediction.water_requirement,
+      color: "text-cyan-400",
+      description:
+        "Estimated irrigation requirement for this crop.",
+    },
+    {
+      icon: ThermometerSun,
+      title: "Growth Duration",
+      value: prediction.growth_duration,
+      color: "text-orange-300",
+      description:
+        "Approximate time required until harvesting.",
+    },
+    {
+      icon: Droplets,
+      title: "Expected Yield",
+      value: prediction.expected_yield,
+      color: "text-blue-400",
+      description:
+        "Estimated production under ideal farming practices.",
+    },
+    {
+      icon: TrendingUp,
+      title: "Expected Profit",
+      value: prediction.expected_profit,
+      color: "text-emerald-400",
+      description:
+        "Approximate profit based on average market conditions.",
+    },
+    {
+      icon: FlaskConical,
+      title: "Recommended Fertilizer",
+      value: prediction.recommended_fertilizer,
+      color: "text-yellow-300",
+      description:
+        "Suggested fertilizer for healthy crop growth.",
+    },
+    {
+      icon: ShieldCheck,
+      title: "Risk Level",
+      value: prediction.risk_level,
+      color: "text-purple-300",
+      description:
+        "Estimated cultivation risk based on AI analysis.",
+    },
+  ];
   return (
     <section className="mt-14">
 

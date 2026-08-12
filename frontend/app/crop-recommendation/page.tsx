@@ -5,6 +5,7 @@ import { useState } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 
 import CropHero from "@/components/crop/CropHero";
+import FarmLocationSelector from "@/components/crop/FarmLocationSelector";
 import FarmInputPanel from "@/components/crop/FarmInputPanel";
 import RecommendationResult from "@/components/crop/RecommendationResult";
 import AlternativeCrops from "@/components/crop/AlternativeCrops";
@@ -14,13 +15,15 @@ import MarketIntelligence from "@/components/crop/MarketIntelligence";
 import AIActionPlan from "@/components/crop/AIActionPlan";
 
 export default function CropRecommendationPage() {
+  const [prediction, setPrediction] = useState<any>(null);
 
-  const [showResult, setShowResult] = useState(false);
+  const [location, setLocation] = useState({
+    state: "",
+    district: "",
+  });
 
   return (
-
     <DashboardLayout>
-
       <div
         className="
           w-full
@@ -30,35 +33,44 @@ export default function CropRecommendationPage() {
           space-y-14
         "
       >
-
         <CropHero />
 
-        <FarmInputPanel
-          onComplete={() => setShowResult(true)}
+        <FarmLocationSelector
+          onLocationChange={setLocation}
         />
 
-        {showResult && (
+        <FarmInputPanel
+          state={location.state}
+          district={location.district}
+          onComplete={(result) => setPrediction(result)}
+        />
 
+        {prediction && (
           <>
-            <RecommendationResult />
+            <RecommendationResult
+              prediction={prediction}
+            />
 
-            <AlternativeCrops />
+            <AlternativeCrops
+              prediction={prediction}
+            />
 
-            <AIDecisionReport />
+            <AIDecisionReport
+              prediction={prediction}
+            />
 
-            <SmartFarmAnalytics />
+            <SmartFarmAnalytics
+              prediction={prediction}
+            />
 
-            <MarketIntelligence />
+            <MarketIntelligence
+              prediction={prediction}
+            />
 
-            <AIActionPlan />
+            <AIActionPlan prediction={prediction} />
           </>
-
         )}
-
       </div>
-
     </DashboardLayout>
-
   );
-
 }

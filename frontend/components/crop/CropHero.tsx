@@ -185,7 +185,7 @@ export default function CropHero() {
           </h2>
 
           <p className="mt-2 text-white/60">
-            Recommendation Accuracy
+            Model Accuracy
           </p>
         </motion.div>
 

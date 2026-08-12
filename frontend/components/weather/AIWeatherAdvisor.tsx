@@ -1,4 +1,6 @@
 "use client";
+import { useWeather } from "@/context/WeatherContext";
+import { useEffect, useState } from "react";
 
 import {
   Bot,
@@ -9,34 +11,49 @@ import {
   CheckCircle2,
 } from "lucide-react";
 
-const insights = [
-  {
-    icon: Sprout,
-    title: "Best Time for Irrigation",
-    value: "After 5:30 PM",
-    color: "text-green-400",
-  },
-  {
-    icon: Sun,
-    title: "UV Index",
-    value: "Very High",
-    color: "text-yellow-300",
-  },
-  {
-    icon: CloudRain,
-    title: "Rain Prediction",
-    value: "No Rain in Next 12 Hours",
-    color: "text-cyan-300",
-  },
-  {
-    icon: Wind,
-    title: "Wind Condition",
-    value: "Light Wind",
-    color: "text-blue-300",
-  },
-];
+import { getWeatherAdvisor } from "@/services/weather";
+
+type Advisor = {
+  confidence: string;
+  irrigation: string;
+  spraying: string;
+  rain: string;
+  disease: string;
+  alerts: string[];
+};
 
 export default function AIWeatherAdvisor() {
+  const [advisor, setAdvisor] = useState<any>(null);
+  const { city } = useWeather();
+
+  useEffect(() => {
+    async function loadAdvisor() {
+      try {
+        const data = await getWeatherAdvisor(city);
+        setAdvisor(data);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    loadAdvisor();
+  }, [city]);
+  const insights = advisor
+    ? [
+      {
+        icon: Sprout,
+        title: "Irrigation",
+        value: advisor.irrigation,
+        color: "text-green-400",
+      },
+      {
+        icon: Wind,
+        title: "Spraying",
+        value: advisor.spraying,
+        color: "text-blue-300",
+      }
+    ]
+    : [];
   return (
     <section className="mt-14">
 
@@ -93,7 +110,7 @@ export default function AIWeatherAdvisor() {
           p-8
         "
       >
-                {/* Top */}
+        {/* Top */}
 
         <div className="flex items-center justify-between">
 
@@ -151,7 +168,7 @@ export default function AIWeatherAdvisor() {
                 font-medium
               "
             >
-              98% Confidence
+              {advisor?.confidence || "--"} Confidence
             </span>
 
           </div>
@@ -162,15 +179,14 @@ export default function AIWeatherAdvisor() {
 
         <div
           className="
-            mt-10
-
+            mt-8
             grid
             grid-cols-2
-
-            gap-6
+            items-start
+            gap-5
           "
         >
-                      {insights.map((item) => {
+          {insights.map((item) => {
 
             const Icon = item.icon;
 
@@ -180,21 +196,17 @@ export default function AIWeatherAdvisor() {
                 key={item.title}
                 className="
                   group
-
+                  flex
+                  h-auto
+                  items-start
                   rounded-2xl
-
                   border
                   border-white/10
-
                   bg-white/[0.03]
-
                   backdrop-blur-xl
-
-                  p-6
-
+                  p-5
                   transition-all
                   duration-500
-
                   hover:-translate-y-1
                   hover:border-green-400/25
                   hover:bg-white/[0.05]
@@ -229,7 +241,7 @@ export default function AIWeatherAdvisor() {
 
                   {/* Content */}
 
-                  <div className="flex-1">
+                  <div className="flex flex-col justify-between flex-1">
 
                     <p
                       className="
@@ -243,10 +255,9 @@ export default function AIWeatherAdvisor() {
                     <h4
                       className="
                         mt-2
-
-                        text-lg
+                        text-base
                         font-semibold
-
+                        leading-6
                         text-white
                       "
                     >
@@ -262,7 +273,7 @@ export default function AIWeatherAdvisor() {
             );
 
           })}
-                </div>
+        </div>
 
         {/* AI Recommendation */}
 
@@ -323,17 +334,24 @@ export default function AIWeatherAdvisor() {
               <p
                 className="
                   mt-3
-
                   leading-8
-
                   text-white/70
                 "
               >
-                Weather conditions are favorable for irrigation after sunset.
-                Avoid spraying pesticides during midday because of the high UV
-                index. Light winds make today suitable for fertilizer
-                application, and no rainfall is expected in the next 12 hours.
+                {advisor?.rain}
               </p>
+
+              <div className="mt-6 rounded-xl bg-white/5 p-4">
+                <p className="text-sm text-white/60">
+                  Fertilizer Recommendation
+                </p>
+
+                <ul className="list-disc pl-5 space-y-2 text-white/80">
+                  {advisor?.fertilizer?.map((item: string, index: number) => (
+                    <li key={index}>{item}</li>
+                  ))}
+                </ul>
+              </div>
 
             </div>
 

@@ -1,11 +1,25 @@
 "use client";
-
-import {
-  TriangleAlert,
-  ShieldCheck,
-} from "lucide-react";
+import { useWeather } from "@/context/WeatherContext";
+import { useEffect, useState } from "react";
+import { TriangleAlert, ShieldCheck } from "lucide-react";
+import { getWeatherAlerts } from "@/services/weather";
 
 export default function WeatherAlerts() {
+  const [alerts, setAlerts] = useState<any>(null);
+  const { city } = useWeather();
+
+  useEffect(() => {
+    async function loadAlerts() {
+      try {
+        const data = await getWeatherAlerts(city);
+        setAlerts(data);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    loadAlerts();
+  }, [city]);
   return (
     <section className="mt-14">
 
@@ -51,10 +65,10 @@ export default function WeatherAlerts() {
 
           backdrop-blur-2xl
 
-          p-8
+          p-6
         "
       >
-                <div className="flex items-start justify-between gap-8">
+        <div className="flex items-start justify-between gap-8">
 
           {/* Left */}
 
@@ -91,7 +105,7 @@ export default function WeatherAlerts() {
                   text-white
                 "
               >
-                No Severe Weather Alerts
+                Live weather analysis generated from current weather conditions and AI recommendations
               </h3>
 
               <p
@@ -103,9 +117,7 @@ export default function WeatherAlerts() {
                   leading-7
                 "
               >
-                Current weather conditions are stable.
-                No storms, heavy rainfall, or extreme weather
-                warnings have been detected for your region.
+                {alerts?.summary || "Loading..."}
               </p>
 
             </div>
@@ -232,7 +244,7 @@ export default function WeatherAlerts() {
                 leading-6
               "
             >
-              No rainfall expected for the next 12 hours.
+              {alerts?.rain || "Loading..."}
             </p>
 
           </div>
@@ -288,7 +300,7 @@ export default function WeatherAlerts() {
                 leading-6
               "
             >
-              Light winds today. Safe conditions for spraying and field work.
+              {alerts?.spraying || "Loading..."}
             </p>
 
           </div>
@@ -344,8 +356,8 @@ export default function WeatherAlerts() {
                 leading-6
               "
             >
-              High UV during afternoon. Field work is recommended before 11 AM
-              or after 5 PM.
+              {alerts?.disease || "Loading..."}
+              
             </p>
 
           </div>

@@ -1,4 +1,5 @@
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import { WeatherProvider } from "@/context/WeatherContext";
 
 import WeatherHeader from "@/components/weather/WeatherHeader";
 import WeatherHero from "@/components/weather/WeatherHero";
@@ -11,19 +12,25 @@ import WeatherAlerts from "@/components/weather/WeatherAlerts";
 export default function WeatherPage() {
   return (
     <DashboardLayout>
-      <WeatherHeader />
+      <WeatherProvider>
+        <div className="space-y-10">
 
-      <WeatherHero />
+          <WeatherHeader />
 
-      <WeatherHighlights />
+          <WeatherHero />
 
-      <HourlyStrip />
+          {/* <WeatherHighlights /> */}
 
-      <WeeklyForecast />
+          <HourlyStrip />
 
-      <AIWeatherAdvisor />
+          <WeeklyForecast />
 
-      <WeatherAlerts />
+          <AIWeatherAdvisor />
+
+          <WeatherAlerts />
+
+        </div>
+      </WeatherProvider>
     </DashboardLayout>
   );
 }

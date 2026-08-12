@@ -1,5 +1,6 @@
 "use client";
-
+import LocationSearch from "@/components/LocationSearch";
+import { useWeather } from "@/context/WeatherContext";
 import { motion } from "framer-motion";
 import {
   Sparkles,
@@ -7,6 +8,11 @@ import {
 } from "lucide-react";
 
 export default function WeatherHeader() {
+  const {
+    // state,
+    // district,
+    city,
+  } = useWeather();
   return (
     <section className="relative px-8 pt-6 pb-10">
 
@@ -144,94 +150,12 @@ export default function WeatherHeader() {
           harvesting and crop protection.
         </p>
 
-        {/* Bottom Info */}
-
-        <div className="mt-10 flex flex-wrap gap-5">
-
-          {/* Location */}
-
-          <div
-            className="
-              flex
-              items-center
-              gap-3
-
-              rounded-full
-
-              border
-              border-cyan-400/20
-
-              bg-cyan-500/10
-
-              px-5
-              py-3
-
-              backdrop-blur-xl
-            "
-          >
-
-            <MapPin
-              size={18}
-              className="text-cyan-300"
-            />
-
-            <span className="text-white">
-              Pune, Maharashtra
-            </span>
-
-          </div>
-
-          {/* AI Status */}
-
-          <div
-            className="
-              flex
-              items-center
-              gap-3
-
-              rounded-full
-
-              border
-              border-green-400/20
-
-              bg-green-500/10
-
-              px-5
-              py-3
-
-              backdrop-blur-xl
-            "
-          >
-
-            <div
-              className="
-                h-3
-                w-3
-
-                rounded-full
-
-                bg-green-400
-
-                animate-pulse
-              "
-            />
-
-            <span
-              className="
-                font-semibold
-
-                text-green-300
-              "
-            >
-              AI Forecast Active
-            </span>
-
-          </div>
-
-        </div>
-
       </motion.div>
 
     </section>
+
+    
+
+    
   );
 }

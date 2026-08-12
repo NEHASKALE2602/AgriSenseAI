@@ -10,8 +10,9 @@ import {
   Sun,
 } from "lucide-react";
 
-export default function Topbar() {
+import useWeather from "../../hooks/useWeather";
 
+export default function Topbar() {
   const today = new Date().toLocaleDateString("en-IN", {
     weekday: "long",
     day: "numeric",
@@ -19,29 +20,24 @@ export default function Topbar() {
     year: "numeric",
   });
 
+  const { weather, loading, error } = useWeather();
+
   return (
-
     <motion.header
-
       initial={{ opacity: 0, y: -30 }}
-
       animate={{ opacity: 1, y: 0 }}
-
       transition={{ duration: 0.8 }}
-
       className="
         fixed
         top-7
         left-[260px]
         right-8
         z-40
-
         flex
         items-center
         justify-between
       "
     >
-
       {/* LEFT */}
 
       <div
@@ -51,7 +47,6 @@ export default function Topbar() {
           gap-8
         "
       >
-
         {/* Greeting */}
 
         <div
@@ -61,7 +56,6 @@ export default function Topbar() {
             gap-3
           "
         >
-
           <span className="text-2xl">
             👋
           </span>
@@ -79,7 +73,6 @@ export default function Topbar() {
               Neha
             </span>
           </h2>
-
         </div>
 
         {/* Date */}
@@ -104,7 +97,6 @@ export default function Topbar() {
             text-sm
           "
         >
-
           <Sun
             size={17}
             className="
@@ -114,13 +106,16 @@ export default function Topbar() {
           />
 
           <span>
-            28°C
+            {loading
+              ? "Loading..."
+              : weather
+              ? `${weather.temperature}°C`
+              : "--°C"}
           </span>
 
           <span className="text-white/45">
             Pune
           </span>
-
         </div>
 
         {/* AI Status */}
@@ -132,7 +127,6 @@ export default function Topbar() {
             gap-2
           "
         >
-
           <span
             className="
               h-2.5
@@ -153,9 +147,7 @@ export default function Topbar() {
           >
             AI System Online
           </span>
-
         </div>
-
       </div>
 
       {/* RIGHT */}
@@ -167,84 +159,55 @@ export default function Topbar() {
           gap-3
         "
       >
-
         <TopButton>
-          <Bell size={18}/>
+          <Bell size={18} />
         </TopButton>
 
         <TopButton>
-          <Globe size={18}/>
+          <Globe size={18} />
         </TopButton>
 
         <TopButton>
-          <Moon size={18}/>
+          <Moon size={18} />
         </TopButton>
 
         <TopButton>
-          <User size={18}/>
+          <User size={18} />
         </TopButton>
-
       </div>
-
     </motion.header>
-
   );
-
 }
 
 function TopButton({
   children,
-}:{
+}: {
   children: React.ReactNode;
-}){
-
-  return(
-
+}) {
+  return (
     <button
-
       className="
         h-11
         w-11
-
         rounded-full
-
         bg-white/8
-
         backdrop-blur-xl
-
         border
-
         border-white/10
-
         flex
-
         items-center
-
         justify-center
-
         text-white/85
-
         transition-all
-
         duration-300
-
         hover:scale-110
-
         hover:border-green-400/50
-
         hover:text-green-300
-
         hover:bg-white/12
-
         hover:shadow-[0_0_20px_rgba(34,197,94,.35)]
       "
-
     >
-
       {children}
-
     </button>
-
   );
-
 }

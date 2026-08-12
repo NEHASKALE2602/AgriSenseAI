@@ -11,7 +11,13 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 
-export default function MarketIntelligence() {
+type MarketIntelligenceProps = {
+  prediction: any;
+};
+
+export default function MarketIntelligence({
+  prediction,
+}: MarketIntelligenceProps) {
   return (
     <section className="mt-16">
 
@@ -126,8 +132,8 @@ export default function MarketIntelligence() {
           <div className="flex items-center gap-6">
 
             <img
-              src="/images/crops/rice.png"
-              alt="Rice"
+              src={`/images/${prediction.recommended_crop.toLowerCase()}.png`}
+              alt={prediction.recommended_crop}
               className="
                 h-24
                 w-24
@@ -158,7 +164,7 @@ export default function MarketIntelligence() {
                   text-white
                 "
               >
-                Rice
+                {prediction.recommended_crop}
               </h2>
 
               <div
@@ -186,10 +192,10 @@ export default function MarketIntelligence() {
                     text-green-300
                   "
                 >
-                  Best Match
+                  Top Prediction
                 </span>
 
-                <span
+                {/* <span
                   className="
                     rounded-full
 
@@ -206,9 +212,9 @@ export default function MarketIntelligence() {
                   "
                 >
                   High Profit
-                </span>
+                </span> */}
 
-                <span
+                {/* <span
                   className="
                     rounded-full
 
@@ -224,8 +230,8 @@ export default function MarketIntelligence() {
                     text-yellow-300
                   "
                 >
-                  Low Risk
-                </span>
+                   Low Risk
+                </span> */}
 
               </div>
 
@@ -252,7 +258,7 @@ export default function MarketIntelligence() {
                 text-green-300
               "
             >
-              98%
+              {prediction.confidence}%
             </h2>
 
             <p className="mt-2 text-white/50">
@@ -262,7 +268,7 @@ export default function MarketIntelligence() {
           </div>
 
         </div>
-                {/* ================= REPORT BODY ================= */}
+        {/* ================= REPORT BODY ================= */}
 
         <div
           className="
@@ -289,17 +295,14 @@ export default function MarketIntelligence() {
               AI Market Opportunity
             </h3>
 
-            <p
-              className="
-                mt-3
-                text-white/65
-                leading-8
-              "
-            >
-              Based on real-time agricultural trends,
-              climate conditions and historical crop
-              performance, AgriSense AI predicts Rice
-              to be the most profitable crop this season.
+            <p className="mt-3 text-white/65 leading-8">
+              Based on the selected farm location, soil
+              parameters, weather conditions and AI model
+              prediction, AgriSense AI identifies{" "}
+              <span className="text-green-300 font-semibold">
+                {prediction.recommended_crop}
+              </span>{" "}
+              as the most suitable crop for this farm.
             </p>
 
             {/* REPORT */}
@@ -310,31 +313,31 @@ export default function MarketIntelligence() {
                 {
                   icon: IndianRupee,
                   title: "Expected Selling Price",
-                  value: "₹2,850 / Quintal",
+                  value: prediction.market_price ?? "₹2800 / Quintal",
                   color: "text-green-300",
                 },
                 {
                   icon: TrendingUp,
                   title: "Market Demand",
-                  value: "Very High",
+                  value: prediction.market_demand ?? "High",
                   color: "text-cyan-300",
                 },
                 {
                   icon: ShieldCheck,
                   title: "Risk Level",
-                  value: "Low",
+                  value: prediction.risk_level,
                   color: "text-green-300",
                 },
                 {
                   icon: ShoppingBasket,
                   title: "Nearest Buyers",
-                  value: "32 Buyers",
+                  value: prediction.nearest_buyers ?? "25 Buyers",
                   color: "text-yellow-300",
                 },
                 {
                   icon: CalendarDays,
                   title: "Harvest Duration",
-                  value: "118 Days",
+                  value: prediction.harvest_duration ?? "120 Days",
                   color: "text-orange-300",
                 },
 
@@ -495,7 +498,7 @@ export default function MarketIntelligence() {
                   text-white
                 "
               >
-                Why Rice?
+                Why {prediction.recommended_crop}?
               </h3>
 
               <p
@@ -507,54 +510,36 @@ export default function MarketIntelligence() {
                   text-white/70
                 "
               >
-                Rice has the highest compatibility with
-                your soil nutrients, rainfall, humidity,
-                temperature and current market demand.
-                The AI model predicts maximum profitability
-                with minimum cultivation risk.
+                {prediction.ai_summary ?? "AI analysis unavailable."}
               </p>
-                            {/* AI Reasons */}
+              {/* AI Reasons */}
 
               <div className="mt-8 space-y-4">
-
-                {[
-                  "Excellent soil nutrient compatibility",
-                  "Ideal rainfall prediction for this season",
-                  "Very high market demand",
-                  "Low disease probability",
-                  "Higher expected yield",
-                  "Government subsidy available",
-                ].map((item) => (
-
+                {prediction.ai_reasons?.map((item: string) => (
                   <div
                     key={item}
                     className="
-                      flex
-                      items-center
-                      gap-3
-                    "
+        flex
+        items-center
+        gap-3
+      "
                   >
-
                     <div
                       className="
-                        h-3
-                        w-3
-                        rounded-full
-                        bg-green-400
-                        shadow-[0_0_12px_rgba(34,197,94,.8)]
-                      "
+          h-3
+          w-3
+          rounded-full
+          bg-green-400
+          shadow-[0_0_12px_rgba(34,197,94,.8)]
+        "
                     />
 
                     <span className="text-white/80">
                       {item}
                     </span>
-
                   </div>
-
                 ))}
-
               </div>
-
               {/* Profit Box */}
 
               <div
@@ -587,7 +572,7 @@ export default function MarketIntelligence() {
                     text-green-300
                   "
                 >
-                  ₹1.24L
+                  {prediction.expected_profit ?? "₹1.2L"}
                 </h2>
 
                 <p
