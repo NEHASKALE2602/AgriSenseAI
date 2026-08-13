@@ -4,8 +4,13 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
 interface Props {
-  setScanning: React.Dispatch<React.SetStateAction<boolean>>;
-  setCompleted: React.Dispatch<React.SetStateAction<boolean>>;
+  setScanning: React.Dispatch<
+    React.SetStateAction<boolean>
+  >;
+
+  setCompleted: React.Dispatch<
+    React.SetStateAction<boolean>
+  >;
 }
 
 export default function AIScanningOverlay({
@@ -17,31 +22,22 @@ export default function AIScanningOverlay({
 
   useEffect(() => {
 
-    let value = 0;
-
     const interval = setInterval(() => {
 
-      value += 2;
+      setProgress((current) => {
 
-      setProgress(value);
+        if (current >= 95) {
+          return 95;
+        }
 
-      if (value >= 100) {
-
-        clearInterval(interval);
-
-        setTimeout(() => {
-
-          setScanning(false);
-
-          setCompleted(true);
-
-        }, 400);
-
-      }
+        return current + 2;
+      });
 
     }, 80);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+    };
 
   }, []);
 
@@ -68,20 +64,19 @@ export default function AIScanningOverlay({
         absolute
         left-1/2
         top-1/2
-
+        z-[500]
+        flex
+        h-[320px]
+        w-[320px]
         -translate-x-1/2
         -translate-y-1/2
-
-        flex
         flex-col
         items-center
         justify-center
-
-        w-[320px]
-        h-[320px]
       "
     >
-            {/* OUTER SCANNING RING */}
+
+      {/* OUTER RING */}
 
       <motion.div
 
@@ -96,20 +91,15 @@ export default function AIScanningOverlay({
         }}
 
         className="
+          pointer-events-none
           absolute
-
           h-[300px]
           w-[300px]
-
           rounded-full
-
           border-2
-
           border-dashed
-
           border-green-400/40
         "
-
       />
 
       {/* INNER RING */}
@@ -127,21 +117,17 @@ export default function AIScanningOverlay({
         }}
 
         className="
+          pointer-events-none
           absolute
-
           h-[220px]
           w-[220px]
-
           rounded-full
-
           border
-
           border-cyan-400/30
         "
-
       />
 
-      {/* SCANNER CORE */}
+      {/* CORE */}
 
       <motion.div
 
@@ -156,26 +142,17 @@ export default function AIScanningOverlay({
 
         className="
           relative
-
           flex
-
           h-[150px]
           w-[150px]
-
           items-center
           justify-center
-
           rounded-full
-
           border
-
           border-green-400/30
-
           bg-green-500/10
-
           backdrop-blur-xl
         "
-
       >
 
         <motion.div
@@ -191,38 +168,18 @@ export default function AIScanningOverlay({
           }}
 
           className="
+            pointer-events-none
             absolute
-
             h-[110px]
             w-[110px]
-
             rounded-full
-
             border-2
-
             border-dashed
-
             border-green-300/40
           "
-
         />
 
-        <motion.div
-
-          animate={{
-            opacity: [0.4, 1, 0.4],
-          }}
-
-          transition={{
-            repeat: Infinity,
-            duration: 1.2,
-          }}
-
-          className="
-            text-center
-          "
-
-        >
+        <div className="text-center">
 
           <p
             className="
@@ -237,19 +194,18 @@ export default function AIScanningOverlay({
           <p
             className="
               text-xs
-              tracking-[0.3em]
               uppercase
+              tracking-[0.3em]
               text-white/60
             "
           >
             SCANNING
           </p>
 
-        </motion.div>
+        </div>
 
       </motion.div>
 
-      {/* STATUS */}
 
       <motion.h2
 
@@ -264,113 +220,70 @@ export default function AIScanningOverlay({
 
         className="
           mt-10
-
           text-2xl
-
           font-bold
-
           text-green-300
         "
-
       >
-
         AI Scanning Started...
-
       </motion.h2>
+
 
       <p
         className="
           mt-3
-
           text-center
-
           text-white/60
         "
       >
-        Extracting Features • Running CNN • Predicting Disease
+        Uploading image • Running YOLO • Predicting disease
       </p>
-            {/* PROGRESS BAR */}
+
+
+      {/* PROGRESS */}
 
       <div
         className="
           mt-8
-
           h-3
           w-[280px]
-
           overflow-hidden
-
           rounded-full
-
           bg-white/10
         "
       >
 
         <motion.div
 
-          initial={{
-            width: 0,
-          }}
-
           animate={{
             width: `${progress}%`,
           }}
 
-          transition={{
-            duration: 0.08,
-            ease: "linear",
-          }}
-
           className="
             h-full
-
             rounded-full
-
             bg-gradient-to-r
-
             from-green-400
-
             via-emerald-400
-
             to-cyan-400
-
             shadow-[0_0_20px_rgba(34,197,94,.8)]
           "
-
         />
 
       </div>
 
-      {/* PERCENTAGE */}
 
-      <motion.div
-
-        animate={{
-          opacity: [0.5, 1, 0.5],
-        }}
-
-        transition={{
-          repeat: Infinity,
-          duration: 1.5,
-        }}
-
+      <div
         className="
           mt-5
-
           text-4xl
-
           font-black
-
           text-white
         "
-
       >
-
         {progress}%
+      </div>
 
-      </motion.div>
-
-      {/* LOADING MESSAGE */}
 
       <motion.p
 
@@ -385,24 +298,15 @@ export default function AIScanningOverlay({
 
         className="
           mt-3
-
           text-sm
-
-          tracking-[0.35em]
-
           uppercase
-
+          tracking-[0.35em]
           text-green-300
         "
-
       >
-
-        Please Wait...
-
+        Processing...
       </motion.p>
 
     </motion.div>
-
   );
-
 }

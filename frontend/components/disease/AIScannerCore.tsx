@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import {
@@ -13,47 +13,65 @@ import {
 interface Props {
   image: string | null;
   setImage: React.Dispatch<React.SetStateAction<string | null>>;
+
+  file: File | null;
+  setFile: React.Dispatch<React.SetStateAction<File | null>>;
+
   setScanning: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function AIScannerCore({
   image,
   setImage,
+  file,
+  setFile,
   setScanning,
 }: Props) {
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
   const [dragging, setDragging] = useState(false);
+
+  const handleFile = (selectedFile: File | undefined) => {
+
+    if (!selectedFile) return;
+
+    if (!selectedFile.type.startsWith("image/")) {
+      alert("Please select a valid image file.");
+      return;
+    }
+
+    setFile(selectedFile);
+
+    const url = URL.createObjectURL(selectedFile);
+
+    setImage(url);
+  };
 
   const handleImage = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
 
-    const file = e.target.files?.[0];
+    const selectedFile = e.target.files?.[0];
 
-    if (!file) return;
-
-    const url = URL.createObjectURL(file);
-
-    setImage(url);
-
-  };
-
-  const openPicker = () => {
-
-    fileInputRef.current?.click();
-
+    handleFile(selectedFile);
   };
 
   const removeImage = () => {
 
     setImage(null);
+    setFile(null);
+  };
 
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
+  const handleDrop = (
+    e: React.DragEvent<HTMLDivElement>
+  ) => {
 
+    e.preventDefault();
+
+    setDragging(false);
+
+    const droppedFile = e.dataTransfer.files?.[0];
+
+    handleFile(droppedFile);
   };
 
   return (
@@ -62,7 +80,7 @@ export default function AIScannerCore({
 
       initial={{
         opacity: 0,
-        scale: .9,
+        scale: 0.9,
       }}
 
       animate={{
@@ -72,32 +90,30 @@ export default function AIScannerCore({
 
       className="
         absolute
-        z-50
-
+        z-[100]
         left-1/2
         top-1/2
-
         -translate-x-1/2
         -translate-y-1/2
-
         h-[280px]
         w-[280px]
       "
-
     >
 
+      {/* REAL FILE INPUT */}
+
       <input
-
-        ref={fileInputRef}
-
+        id="disease-image-upload"
         type="file"
-
         accept="image/*"
-
-        className="hidden"
-
+        className="
+          absolute
+          h-px
+          w-px
+          opacity-0
+          pointer-events-none
+        "
         onChange={handleImage}
-
       />
 
       <motion.div
@@ -117,81 +133,63 @@ export default function AIScannerCore({
           e.preventDefault();
 
           setDragging(true);
-
         }}
 
         onDragLeave={() => {
 
           setDragging(false);
-
         }}
 
-        onDrop={(e) => {
-
-          e.preventDefault();
-
-          setDragging(false);
-
-          const file = e.dataTransfer.files[0];
-
-          if (!file) return;
-
-          const url = URL.createObjectURL(file);
-
-          setImage(url);
-
-        }}
+        onDrop={handleDrop}
 
         className="
           relative
-
           flex
-
           h-full
           w-full
-
           items-center
           justify-center
-
-          overflow-hidden
-
+          overflow-visible
           rounded-full
-
           border
           border-white/10
-
           bg-white/[0.05]
-
           backdrop-blur-3xl
-
           shadow-[0_0_70px_rgba(34,197,94,.18)]
         "
       >
 
+        {/* GREEN GLOW */}
+
         <motion.div
 
           animate={{
-            scale: [1,1.08,1],
-            opacity: [.25,.5,.25],
+            scale: [1, 1.08, 1],
+            opacity: [0.25, 0.5, 0.25],
           }}
 
           transition={{
-            repeat:Infinity,
-            duration:3,
+            repeat: Infinity,
+            duration: 3,
           }}
 
           className="
+            pointer-events-none
             absolute
             inset-0
             rounded-full
             bg-green-500/10
             blur-[45px]
           "
-
         />
 
         <AnimatePresence mode="wait">
-                    {image ? (
+
+          {image ? (
+
+            /* ============================= */
+            /* IMAGE SELECTED */
+            /* ============================= */
 
             <motion.div
 
@@ -199,7 +197,7 @@ export default function AIScannerCore({
 
               initial={{
                 opacity: 0,
-                scale: .85,
+                scale: 0.85,
               }}
 
               animate={{
@@ -209,115 +207,122 @@ export default function AIScannerCore({
 
               exit={{
                 opacity: 0,
-                scale: .8,
+                scale: 0.8,
               }}
 
               className="
-              relative
-              z-[99999]
+                relative
+                z-[200]
                 flex
                 flex-col
                 items-center
                 justify-center
               "
-
             >
 
-              <motion.img
+              <img
 
                 src={image}
 
-                alt="Crop Preview"
+                alt="Selected crop"
 
                 className="
                   h-[150px]
                   w-[150px]
-
                   rounded-[28px]
-
                   object-cover
-
                   border
                   border-white/15
-
                   shadow-[0_20px_50px_rgba(0,0,0,.35)]
                 "
-
               />
 
-              <button
-
-                onClick={removeImage}
-
+              <p
                 className="
-                  mt-5
-
-                  flex
-                  items-center
-                  gap-2
-
-                  rounded-full
-
-                  border
-                  border-red-400/20
-
-                  bg-red-500/10
-
-                  px-5
-                  py-2
-
-                  text-red-300
-
-                  transition
-
-                  hover:bg-red-500/20
+                  mt-3
+                  max-w-[200px]
+                  truncate
+                  text-xs
+                  text-white/50
                 "
-
               >
+                {file?.name}
+              </p>
 
-                <X size={16} />
+              <div className="mt-4 flex gap-3">
 
-                Remove
+                <button
 
-              </button>
+                  type="button"
 
-              <button
+                  onClick={removeImage}
 
-                onClick={() => setScanning(true)}
+                  className="
+                    flex
+                    items-center
+                    gap-2
+                    rounded-full
+                    border
+                    border-red-400/20
+                    bg-red-500/10
+                    px-4
+                    py-2
+                    text-sm
+                    text-red-300
+                    transition
+                    hover:bg-red-500/20
+                  "
+                >
 
-                className="
-                  mt-6
+                  <X size={15} />
 
-                  rounded-full
+                  Remove
 
-                  bg-gradient-to-r
+                </button>
 
-                  from-green-500
-                  to-emerald-600
+                <button
 
-                  px-8
-                  py-3
+                  type="button"
 
-                  font-semibold
+                  onClick={() => {
 
-                  text-white
+                    if (!file) {
+                      alert("Please select an image first.");
+                      return;
+                    }
 
-                  shadow-[0_15px_35px_rgba(34,197,94,.35)]
+                    setScanning(true);
+                  }}
 
-                  transition
+                  className="
+                    rounded-full
+                    bg-gradient-to-r
+                    from-green-500
+                    to-emerald-600
+                    px-5
+                    py-2
+                    text-sm
+                    font-semibold
+                    text-white
+                    shadow-[0_15px_35px_rgba(34,197,94,.35)]
+                    transition
+                    hover:scale-105
+                  "
+                >
 
-                  hover:scale-105
-                "
+                  Analyze
 
-              >
+                </button>
 
-                Analyze Disease
-
-              </button>
+              </div>
 
             </motion.div>
 
           ) : (
+
+            /* ============================= */
+            /* UPLOAD STATE */
+            /* ============================= */
 
             <motion.div
 
@@ -339,12 +344,15 @@ export default function AIScannerCore({
               }}
 
               className="
+                relative
+                z-[200]
                 flex
                 flex-col
                 items-center
               "
             >
-                            <motion.div
+
+              <motion.div
 
                 animate={{
                   y: [0, -10, 0],
@@ -365,13 +373,11 @@ export default function AIScannerCore({
                     text-green-300
                     drop-shadow-[0_0_25px_rgba(34,197,94,.8)]
                   "
-
                 />
 
               </motion.div>
 
               <h2
-
                 className="
                   mt-7
                   text-[26px]
@@ -379,15 +385,11 @@ export default function AIScannerCore({
                   tracking-tight
                   text-white
                 "
-
               >
-
                 Upload Crop Image
-
               </h2>
 
               <p
-
                 className="
                   mt-3
                   max-w-[210px]
@@ -395,86 +397,68 @@ export default function AIScannerCore({
                   leading-7
                   text-white/60
                 "
-
               >
-
                 Drag & Drop or browse your crop image
                 for AI disease diagnosis.
-
               </p>
 
-              <button
-    type="button"
-    style={{ zIndex: 99999 }}
+              {/* IMPORTANT:
+                  LABEL DIRECTLY OPENS FILE PICKER
+              */}
 
-                onClick={openPicker}
+              <label
+
+                htmlFor="disease-image-upload"
 
                 className="
+                  relative
+                  z-[300]
                   mt-8
-
                   flex
+                  cursor-pointer
                   items-center
                   gap-3
-
                   rounded-full
-
                   border
                   border-green-400/20
-
                   bg-green-500/10
-
                   px-6
                   py-3
-
                   font-semibold
-
                   text-green-200
-
                   transition-all
                   duration-300
-
                   hover:scale-105
                   hover:bg-green-500/20
                 "
-
               >
 
                 <ImagePlus size={18} />
 
                 Choose Image
 
-              </button>
+              </label>
 
               <div
-
                 className="
                   mt-7
-
                   rounded-full
-
                   border
                   border-green-400/20
-
                   bg-green-500/10
-
                   px-5
                   py-2
                 "
-
               >
 
                 <div className="flex items-center gap-2">
 
                   <Sparkles
-
                     size={14}
-
                     className="text-green-300"
-
                   />
 
                   <span
-
                     className="
                       text-[11px]
                       font-bold
@@ -482,11 +466,8 @@ export default function AIScannerCore({
                       tracking-[0.28em]
                       text-green-200
                     "
-
                   >
-
                     AI READY
-
                   </span>
 
                 </div>
@@ -502,7 +483,5 @@ export default function AIScannerCore({
       </motion.div>
 
     </motion.div>
-
   );
-
 }

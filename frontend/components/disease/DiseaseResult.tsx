@@ -9,27 +9,30 @@ import {
   Leaf,
   Activity,
   ShieldCheck,
+  Bug,
 } from "lucide-react";
+
+import type { DiseaseResult as DiseaseResultType } from "@/services/disease";
 
 interface Props {
   image: string | null;
+  result: DiseaseResultType;
   onBack: () => void;
 }
 
 export default function DiseaseResult({
   image,
+  result,
   onBack,
 }: Props) {
 
-  // Dummy Result
-  const disease = "Early Blight";
+  const severityClass =
+    result.severity.toLowerCase() === "high"
+      ? "text-red-300"
+      : result.severity.toLowerCase() === "medium"
+      ? "text-yellow-300"
+      : "text-green-300";
 
-  const confidence = 98.4;
-
-  const severity = "Moderate";
-
-  const treatment =
-    "Apply Mancozeb or Copper Fungicide. Remove infected leaves and avoid overhead irrigation.";
 
   return (
 
@@ -45,32 +48,22 @@ export default function DiseaseResult({
         scale: 1,
       }}
 
-      exit={{
-        opacity: 0,
-        scale: 0.8,
-      }}
-
       className="
         absolute
         left-1/2
         top-1/2
-
+        z-[500]
+        max-h-[680px]
+        w-[900px]
         -translate-x-1/2
         -translate-y-1/2
-
-        w-[760px]
-
+        overflow-y-auto
         rounded-[36px]
-
         border
         border-white/10
-
         bg-white/[0.06]
-
-        backdrop-blur-3xl
-
         p-8
-
+        backdrop-blur-3xl
         shadow-[0_30px_80px_rgba(0,0,0,.35)]
       "
     >
@@ -79,35 +72,55 @@ export default function DiseaseResult({
 
         {/* IMAGE */}
 
-        <div>
+        <div className="shrink-0">
 
           <img
-
             src={image ?? ""}
-
-            alt="Crop"
-
+            alt="Analyzed crop"
             className="
               h-[260px]
               w-[260px]
-
               rounded-3xl
-
-              object-cover
-
               border
-
               border-white/10
+              object-cover
             "
-
           />
+
+          <div
+            className="
+              mt-4
+              flex
+              items-center
+              justify-center
+              gap-2
+              rounded-xl
+              border
+              border-green-400/20
+              bg-green-500/10
+              px-4
+              py-3
+              text-sm
+              text-green-300
+            "
+          >
+
+            <CheckCircle2 size={16} />
+
+            AI Analysis Complete
+
+          </div>
 
         </div>
 
+
         {/* RESULT */}
 
-        <div className="flex-1">
-                      <div className="flex items-center gap-3">
+        <div className="min-w-0 flex-1">
+
+          {/* HEADER */}
+
+          <div className="flex items-center gap-3">
 
             <CheckCircle2
               size={34}
@@ -132,26 +145,23 @@ export default function DiseaseResult({
                   text-white/60
                 "
               >
-                AI diagnosis completed successfully.
+                AgriSense Vision AI completed the diagnosis.
               </p>
 
             </div>
 
           </div>
 
-          {/* Disease Card */}
+
+          {/* DISEASE */}
 
           <div
             className="
-              mt-8
-
+              mt-7
               rounded-3xl
-
               border
               border-green-400/20
-
               bg-green-500/10
-
               p-6
             "
           >
@@ -165,15 +175,17 @@ export default function DiseaseResult({
 
               <h3
                 className="
+                  break-words
                   text-2xl
                   font-bold
                   text-green-200
                 "
               >
-                {disease}
+                {result.disease}
               </h3>
 
             </div>
+
 
             <div className="mt-6 space-y-4">
 
@@ -184,10 +196,11 @@ export default function DiseaseResult({
                 </span>
 
                 <span className="font-bold text-green-300">
-                  {confidence}%
+                  {result.confidence}%
                 </span>
 
               </div>
+
 
               <div className="flex justify-between">
 
@@ -195,8 +208,8 @@ export default function DiseaseResult({
                   Severity
                 </span>
 
-                <span className="font-bold text-yellow-300">
-                  {severity}
+                <span className={`font-bold ${severityClass}`}>
+                  {result.severity}
                 </span>
 
               </div>
@@ -205,19 +218,61 @@ export default function DiseaseResult({
 
           </div>
 
-          {/* Treatment */}
+
+          {/* DESCRIPTION */}
 
           <div
             className="
-              mt-7
-
+              mt-5
               rounded-3xl
+              border
+              border-white/10
+              bg-white/[0.04]
+              p-6
+            "
+          >
 
+            <div className="flex items-center gap-3">
+
+              <Bug
+                size={23}
+                className="text-yellow-300"
+              />
+
+              <h3
+                className="
+                  text-xl
+                  font-bold
+                  text-white
+                "
+              >
+                Diagnosis
+              </h3>
+
+            </div>
+
+            <p
+              className="
+                mt-4
+                leading-7
+                text-white/70
+              "
+            >
+              {result.description}
+            </p>
+
+          </div>
+
+
+          {/* TREATMENT */}
+
+          <div
+            className="
+              mt-5
+              rounded-3xl
               border
               border-cyan-400/20
-
               bg-cyan-500/10
-
               p-6
             "
           >
@@ -244,21 +299,68 @@ export default function DiseaseResult({
             <p
               className="
                 mt-4
-
-                leading-8
-
+                leading-7
                 text-white/70
               "
             >
-              {treatment}
+              {result.treatment}
             </p>
 
           </div>
-                    {/* Bottom Actions */}
 
-          <div className="mt-8 flex items-center gap-4">
+
+          {/* PREVENTION */}
+
+          <div
+            className="
+              mt-5
+              rounded-3xl
+              border
+              border-emerald-400/20
+              bg-emerald-500/10
+              p-6
+            "
+          >
+
+            <div className="flex items-center gap-3">
+
+              <Activity
+                size={24}
+                className="text-emerald-300"
+              />
+
+              <h3
+                className="
+                  text-xl
+                  font-bold
+                  text-white
+                "
+              >
+                Prevention
+              </h3>
+
+            </div>
+
+            <p
+              className="
+                mt-4
+                leading-7
+                text-white/70
+              "
+            >
+              {result.prevention}
+            </p>
+
+          </div>
+
+
+          {/* ACTIONS */}
+
+          <div className="mt-7 flex gap-4">
 
             <button
+
+              type="button"
 
               onClick={onBack}
 
@@ -266,29 +368,18 @@ export default function DiseaseResult({
                 flex
                 items-center
                 gap-2
-
                 rounded-full
-
                 bg-gradient-to-r
-
                 from-green-500
-
                 to-emerald-600
-
                 px-7
                 py-3
-
                 font-semibold
-
                 text-white
-
                 shadow-[0_15px_35px_rgba(34,197,94,.35)]
-
-                transition-all
-
+                transition
                 hover:scale-105
               "
-
             >
 
               <RotateCcw size={18} />
@@ -297,60 +388,48 @@ export default function DiseaseResult({
 
             </button>
 
-            <button
 
+            <div
               className="
                 flex
                 items-center
                 gap-2
-
                 rounded-full
-
                 border
-
                 border-yellow-400/20
-
                 bg-yellow-500/10
-
-                px-7
+                px-5
                 py-3
-
-                font-semibold
-
+                text-sm
                 text-yellow-300
               "
-
             >
 
-              <AlertTriangle size={18} />
+              <AlertTriangle size={16} />
 
-              Save Report
+              AI-assisted diagnosis
 
-            </button>
+            </div>
 
           </div>
 
-          {/* Footer */}
+
+          {/* FOOTER */}
 
           <div
             className="
-              mt-8
-
+              mt-7
               flex
               items-center
               gap-2
-
               text-sm
-
-              text-white/45
+              text-white/40
             "
           >
 
-            <Activity
-              size={16}
-            />
+            <Activity size={16} />
 
-            Powered by CNN + Deep Learning Disease Detection Model
+            Powered by YOLO classification + Deep Learning
 
           </div>
 
@@ -359,7 +438,5 @@ export default function DiseaseResult({
       </div>
 
     </motion.div>
-
   );
-
 }

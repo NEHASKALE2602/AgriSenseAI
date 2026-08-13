@@ -135,11 +135,11 @@ export default function DiseaseHero() {
             />
 
             <h2 className="mt-4 text-4xl font-black text-white">
-              99.1%
+              YOLO
             </h2>
 
             <p className="mt-2 text-white/55">
-              AI Accuracy
+              Deep Learning Model
             </p>
 
           </div>
@@ -154,11 +154,11 @@ export default function DiseaseHero() {
             />
 
             <h2 className="mt-4 text-4xl font-black text-white">
-              150+
+              15
             </h2>
 
             <p className="mt-2 text-white/55">
-              Diseases Supported
+              Disease Classes
             </p>
 
           </div>
@@ -173,11 +173,11 @@ export default function DiseaseHero() {
             />
 
             <h2 className="mt-4 text-4xl font-black text-white">
-              &lt; 3s
+              Real-time
             </h2>
 
             <p className="mt-2 text-white/55">
-              AI Response
+              AI Analysis
             </p>
 
           </div>
