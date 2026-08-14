@@ -21,8 +21,12 @@ def get_market_price(crop: str, state: str = "", district: str = ""):
     if district:
         params["filters[district]"] = district
 
-    response = requests.get(BASE_URL, params=params)
-
+    response = requests.get(
+    	BASE_URL,
+    	params=params,
+    	headers={"User-Agent": "Mozilla/5.0"},
+    	timeout=120
+    )
     if response.status_code != 200:
         return None
 
