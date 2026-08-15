@@ -1,6 +1,12 @@
 from dotenv import load_dotenv
+import os
 
-load_dotenv()
+load_dotenv(
+    r"C:\Users\HP\OneDrive\Desktop\AgriSenseAI\backend\.env",
+    override=True
+)
+
+print("NEWS API KEY LOADED:", bool(os.getenv("NEWS_API_KEY")))
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -8,12 +14,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from backend.routes.weather import router as weather_router
 from backend.routes.crop import router as crop_router
 from backend.routes.disease import router as disease_router
+from backend.routes.news import router as news_router
 
 
 app = FastAPI(
     title="AgriSense AI Backend",
     version="1.0"
 )
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -23,9 +31,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 app.include_router(weather_router)
 app.include_router(crop_router)
 app.include_router(disease_router)
+app.include_router(news_router)
 
 
 @app.get("/")
