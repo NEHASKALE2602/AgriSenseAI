@@ -1,12 +1,11 @@
 "use client";
+
 import { useWeather } from "@/context/WeatherContext";
 import { useEffect, useState } from "react";
 
 import {
   Bot,
   Sprout,
-  Sun,
-  CloudRain,
   Wind,
   CheckCircle2,
 } from "lucide-react";
@@ -14,46 +13,70 @@ import {
 import { getWeatherAdvisor } from "@/services/weather";
 
 type Advisor = {
-  confidence: string;
-  irrigation: string;
-  spraying: string;
-  rain: string;
-  disease: string;
-  alerts: string[];
+  confidence?: string;
+  irrigation?: string;
+  spraying?: string;
+  rain?: string;
+  disease?: string;
+  fertilizer?: string[] | string | null;
+  alerts?: string[] | string | null;
 };
 
 export default function AIWeatherAdvisor() {
-  const [advisor, setAdvisor] = useState<any>(null);
+  const [advisor, setAdvisor] = useState<Advisor | null>(null);
   const { city } = useWeather();
 
   useEffect(() => {
     async function loadAdvisor() {
       try {
         const data = await getWeatherAdvisor(city);
+
+        console.log("AI WEATHER ADVISOR RESPONSE:", data);
+
         setAdvisor(data);
       } catch (err) {
-        console.error(err);
+        console.error("AI Weather Advisor Error:", err);
+        setAdvisor(null);
       }
     }
 
-    loadAdvisor();
+    if (city) {
+      loadAdvisor();
+    }
   }, [city]);
+
+  /*
+   * Convert fertilizer into a safe array.
+   *
+   * Backend may return:
+   * 1. ["Use fertilizer A", "Use fertilizer B"]
+   * 2. "Use fertilizer A"
+   * 3. null / undefined
+   */
+
+  const fertilizerItems: string[] = Array.isArray(advisor?.fertilizer)
+    ? advisor.fertilizer
+    : typeof advisor?.fertilizer === "string"
+      ? [advisor.fertilizer]
+      : [];
+
   const insights = advisor
     ? [
-      {
-        icon: Sprout,
-        title: "Irrigation",
-        value: advisor.irrigation,
-        color: "text-green-400",
-      },
-      {
-        icon: Wind,
-        title: "Spraying",
-        value: advisor.spraying,
-        color: "text-blue-300",
-      }
-    ]
+        {
+          icon: Sprout,
+          title: "Irrigation",
+          value: advisor.irrigation || "No recommendation available",
+          color: "text-green-400",
+        },
+        {
+          icon: Wind,
+          title: "Spraying",
+          value: advisor.spraying || "No recommendation available",
+          color: "text-blue-300",
+        },
+      ]
     : [];
+
   return (
     <section className="mt-14">
 
@@ -78,16 +101,12 @@ export default function AIWeatherAdvisor() {
             flex
             items-center
             gap-2
-
-            text-green-400
             text-sm
+            text-green-400
           "
         >
-
           <Bot size={18} />
-
           AI Powered
-
         </div>
 
       </div>
@@ -97,19 +116,15 @@ export default function AIWeatherAdvisor() {
       <div
         className="
           mt-6
-
           rounded-[30px]
-
           border
           border-white/10
-
           bg-white/[0.03]
-
-          backdrop-blur-2xl
-
           p-8
+          backdrop-blur-2xl
         "
       >
+
         {/* Top */}
 
         <div className="flex items-center justify-between">
@@ -144,14 +159,10 @@ export default function AIWeatherAdvisor() {
               flex
               items-center
               gap-2
-
               rounded-full
-
               border
               border-green-400/30
-
               bg-green-400/10
-
               px-4
               py-2
             "
@@ -164,8 +175,8 @@ export default function AIWeatherAdvisor() {
 
             <span
               className="
-                text-green-400
                 font-medium
+                text-green-400
               "
             >
               {advisor?.confidence || "--"} Confidence
@@ -181,11 +192,12 @@ export default function AIWeatherAdvisor() {
           className="
             mt-8
             grid
-            grid-cols-2
-            items-start
+            grid-cols-1
             gap-5
+            md:grid-cols-2
           "
         >
+
           {insights.map((item) => {
 
             const Icon = item.icon;
@@ -196,15 +208,12 @@ export default function AIWeatherAdvisor() {
                 key={item.title}
                 className="
                   group
-                  flex
-                  h-auto
-                  items-start
                   rounded-2xl
                   border
                   border-white/10
                   bg-white/[0.03]
-                  backdrop-blur-xl
                   p-5
+                  backdrop-blur-xl
                   transition-all
                   duration-500
                   hover:-translate-y-1
@@ -219,34 +228,37 @@ export default function AIWeatherAdvisor() {
 
                   <div
                     className="
+                      flex
                       h-12
                       w-12
-
-                      rounded-xl
-
-                      bg-white/5
-
-                      flex
+                      shrink-0
                       items-center
                       justify-center
+                      rounded-xl
+                      bg-white/5
                     "
                   >
 
                     <Icon
                       size={24}
-                      className={`${item.color} transition-all duration-300 group-hover:scale-110`}
+                      className={`
+                        ${item.color}
+                        transition-all
+                        duration-300
+                        group-hover:scale-110
+                      `}
                     />
 
                   </div>
 
                   {/* Content */}
 
-                  <div className="flex flex-col justify-between flex-1">
+                  <div className="flex-1">
 
                     <p
                       className="
-                        text-white/60
                         text-sm
+                        text-white/60
                       "
                     >
                       {item.title}
@@ -273,6 +285,7 @@ export default function AIWeatherAdvisor() {
             );
 
           })}
+
         </div>
 
         {/* AI Recommendation */}
@@ -280,35 +293,31 @@ export default function AIWeatherAdvisor() {
         <div
           className="
             mt-8
-
             rounded-2xl
-
             border
             border-green-400/20
-
             bg-gradient-to-r
             from-green-500/10
             via-transparent
             to-cyan-500/10
-
             p-6
           "
         >
 
           <div className="flex items-start gap-4">
 
+            {/* AI Icon */}
+
             <div
               className="
+                flex
                 h-14
                 w-14
-
-                rounded-2xl
-
-                bg-green-400/10
-
-                flex
+                shrink-0
                 items-center
                 justify-center
+                rounded-2xl
+                bg-green-400/10
               "
             >
 
@@ -318,6 +327,8 @@ export default function AIWeatherAdvisor() {
               />
 
             </div>
+
+            {/* Content */}
 
             <div className="flex-1">
 
@@ -338,19 +349,68 @@ export default function AIWeatherAdvisor() {
                   text-white/70
                 "
               >
-                {advisor?.rain}
+                {advisor?.rain ||
+                  "AI farming recommendations will appear here based on current weather conditions."}
               </p>
 
-              <div className="mt-6 rounded-xl bg-white/5 p-4">
-                <p className="text-sm text-white/60">
+              {/* Fertilizer */}
+
+              <div
+                className="
+                  mt-6
+                  rounded-xl
+                  bg-white/5
+                  p-4
+                "
+              >
+
+                <p
+                  className="
+                    text-sm
+                    text-white/60
+                  "
+                >
                   Fertilizer Recommendation
                 </p>
 
-                <ul className="list-disc pl-5 space-y-2 text-white/80">
-                  {advisor?.fertilizer?.map((item: string, index: number) => (
-                    <li key={index}>{item}</li>
-                  ))}
-                </ul>
+                {fertilizerItems.length > 0 ? (
+
+                  <ul
+                    className="
+                      mt-3
+                      list-disc
+                      space-y-2
+                      pl-5
+                      text-white/80
+                    "
+                  >
+
+                    {fertilizerItems.map(
+                      (item: string, index: number) => (
+
+                        <li key={index}>
+                          {item}
+                        </li>
+
+                      )
+                    )}
+
+                  </ul>
+
+                ) : (
+
+                  <p
+                    className="
+                      mt-3
+                      text-sm
+                      text-white/50
+                    "
+                  >
+                    No fertilizer recommendation available.
+                  </p>
+
+                )}
+
               </div>
 
             </div>

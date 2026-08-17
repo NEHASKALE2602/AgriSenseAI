@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 import os
 
+# Load environment variables
 load_dotenv(
     os.path.join(os.path.dirname(__file__), ".env"),
     override=True
@@ -13,32 +14,46 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from backend.routes.weather import router as weather_router
 from backend.routes.crop import router as crop_router
-#from backend.routes.disease import router as disease_router
 from backend.routes.market import router as market_router
 from backend.routes.news import router as news_router
+from backend.routes.assistant import router as assistant_router
 
+# =========================================================
+# FASTAPI APPLICATION
+# =========================================================
 
 app = FastAPI(
     title="AgriSense AI Backend",
     version="1.0"
 )
 
+# =========================================================
+# CORS
+# =========================================================
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=[
+        "http://localhost:3000"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+# =========================================================
+# ROUTES
+# =========================================================
 
 app.include_router(weather_router)
 app.include_router(crop_router)
-#app.include_router(disease_router)
 app.include_router(market_router)
 app.include_router(news_router)
+app.include_router(assistant_router)
 
+# =========================================================
+# ROOT
+# =========================================================
 
 @app.get("/")
 def home():
