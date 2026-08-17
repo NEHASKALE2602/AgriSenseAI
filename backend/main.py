@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv(
-    r"C:\Users\HP\OneDrive\Desktop\AgriSenseAI\backend\.env",
+    os.path.join(os.path.dirname(__file__), ".env"),
     override=True
 )
 
@@ -13,7 +13,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from backend.routes.weather import router as weather_router
 from backend.routes.crop import router as crop_router
-from backend.routes.disease import router as disease_router
+#from backend.routes.disease import router as disease_router
+from backend.routes.market import router as market_router
 from backend.routes.news import router as news_router
 
 
@@ -34,7 +35,8 @@ app.add_middleware(
 
 app.include_router(weather_router)
 app.include_router(crop_router)
-app.include_router(disease_router)
+#app.include_router(disease_router)
+app.include_router(market_router)
 app.include_router(news_router)
 
 

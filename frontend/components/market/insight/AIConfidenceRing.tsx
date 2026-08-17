@@ -3,7 +3,11 @@
 import { motion } from "framer-motion";
 import { BrainCircuit } from "lucide-react";
 
-export default function AIConfidenceRing() {
+export default function AIConfidenceRing({
+  confidence,
+}: {
+  confidence: number;
+}) {
   return (
     <motion.div
       initial={{
@@ -199,7 +203,7 @@ export default function AIConfidenceRing() {
             text-white
           "
         >
-          94.8%
+          {confidence.toFixed(1)}%
         </h2>
 
         <p
@@ -257,7 +261,7 @@ export default function AIConfidenceRing() {
               strokeDashoffset: 641,
             }}
             whileInView={{
-              strokeDashoffset: 33,
+              strokeDashoffset: 641 - (641 * confidence) / 100,
             }}
             viewport={{ once: true }}
             transition={{

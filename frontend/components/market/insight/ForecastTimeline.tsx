@@ -6,40 +6,51 @@ import {
   TrendingUp,
 } from "lucide-react";
 
-const timeline = [
-  {
-    day: "Today",
-    price: "₹4,820",
-    confidence: "91%",
-    demand: "Medium",
-  },
-  {
-    day: "Tomorrow",
-    price: "₹4,890",
-    confidence: "92%",
-    demand: "High",
-  },
-  {
-    day: "3 Days",
-    price: "₹4,980",
-    confidence: "94%",
-    demand: "High",
-  },
-  {
-    day: "7 Days",
-    price: "₹5,080",
-    confidence: "95%",
-    demand: "Very High",
-  },
-  {
-    day: "15 Days",
-    price: "₹5,240",
-    confidence: "96%",
-    demand: "Very High",
-  },
-];
+interface ForecastTimelineProps {
+  crop: string;
+  currentPrice: number;
+  confidence: number;
+}
 
-export default function ForecastTimeline() {
+export default function ForecastTimeline({
+  crop,
+  currentPrice,
+  confidence,
+}: ForecastTimelineProps) {
+  const priceSteps = [
+    { day: "Today", increase: 0 },
+    { day: "Tomorrow", increase: 0.015 },
+    { day: "3 Days", increase: 0.03 },
+    { day: "7 Days", increase: 0.055 },
+    { day: "15 Days", increase: 0.087 },
+  ];
+
+  const timeline = priceSteps.map((item, index) => {
+    const price =
+      currentPrice > 0
+        ? Math.round(currentPrice * (1 + item.increase))
+        : 0;
+
+    const itemConfidence = Math.min(
+      99,
+      confidence + index
+    );
+
+    const demand =
+      index >= 3
+        ? "Very High"
+        : index >= 1
+          ? "High"
+          : "Medium";
+
+    return {
+      ...item,
+      price,
+      confidence: itemConfidence,
+      demand,
+    };
+  });
+
   return (
     <motion.section
       initial={{
@@ -56,39 +67,27 @@ export default function ForecastTimeline() {
       }}
       className="
         relative
-
         overflow-hidden
-
         rounded-[36px]
-
         border
         border-cyan-400/15
-
         bg-white/[0.04]
-
         backdrop-blur-3xl
-
         p-10
       "
     >
-
-      {/* Background Glow */}
+      {/* Glow */}
 
       <div
         className="
           absolute
           left-1/2
           top-0
-
           h-[280px]
           w-[280px]
-
           -translate-x-1/2
-
           rounded-full
-
           bg-cyan-500/10
-
           blur-[120px]
         "
       />
@@ -104,24 +103,18 @@ export default function ForecastTimeline() {
               flex
               h-14
               w-14
-
               items-center
               justify-center
-
               rounded-2xl
-
               border
               border-cyan-400/20
-
               bg-cyan-500/10
             "
           >
-
             <CalendarDays
               size={28}
               className="text-cyan-300"
             />
-
           </div>
 
           <div>
@@ -129,11 +122,8 @@ export default function ForecastTimeline() {
             <p
               className="
                 text-xs
-
                 uppercase
-
                 tracking-[0.30em]
-
                 text-cyan-300
               "
             >
@@ -143,14 +133,12 @@ export default function ForecastTimeline() {
             <h2
               className="
                 mt-2
-
                 text-4xl
                 font-black
-
                 text-white
               "
             >
-              Predicted Market Movement
+              {crop} Market Movement
             </h2>
 
           </div>
@@ -160,7 +148,6 @@ export default function ForecastTimeline() {
         {/* Timeline */}
 
         <div className="relative mt-16">
-                      {/* Main Line */}
 
           <div
             className="
@@ -168,11 +155,8 @@ export default function ForecastTimeline() {
               left-0
               right-0
               top-5
-
               h-[3px]
-
               rounded-full
-
               bg-gradient-to-r
               from-green-400/50
               via-cyan-400/50
@@ -183,11 +167,8 @@ export default function ForecastTimeline() {
           <div
             className="
               relative
-
               grid
-
               gap-6
-
               lg:grid-cols-5
             "
           >
@@ -215,7 +196,7 @@ export default function ForecastTimeline() {
                 "
               >
 
-                {/* Timeline Node */}
+                {/* Node */}
 
                 <motion.div
                   animate={{
@@ -228,37 +209,28 @@ export default function ForecastTimeline() {
                   }}
                   className="
                     relative
-
                     z-20
-
                     flex
                     h-11
                     w-11
-
                     items-center
                     justify-center
-
                     rounded-full
-
                     border
                     border-green-400/30
-
                     bg-gradient-to-br
                     from-green-400
                     to-cyan-400
-
                     shadow-[0_0_22px_rgba(34,197,94,.65)]
                   "
                 >
-
                   <TrendingUp
                     size={18}
                     className="text-white"
                   />
-
                 </motion.div>
 
-                {/* Glass Card */}
+                {/* Card */}
 
                 <motion.div
                   whileHover={{
@@ -267,18 +239,12 @@ export default function ForecastTimeline() {
                   }}
                   className="
                     mt-8
-
                     w-full
-
                     rounded-[26px]
-
                     border
                     border-white/10
-
                     bg-white/[0.05]
-
                     backdrop-blur-2xl
-
                     p-6
                   "
                 >
@@ -286,13 +252,9 @@ export default function ForecastTimeline() {
                   <p
                     className="
                       text-center
-
                       text-xs
-
                       uppercase
-
                       tracking-[0.25em]
-
                       text-white/45
                     "
                   >
@@ -302,29 +264,26 @@ export default function ForecastTimeline() {
                   <h3
                     className="
                       mt-4
-
                       text-center
-
                       text-3xl
                       font-black
-
                       text-green-300
                     "
                   >
-                    {item.price}
+                    {item.price > 0
+                      ? `₹${item.price.toLocaleString("en-IN")}`
+                      : "N/A"}
                   </h3>
-                                    {/* Confidence */}
+
+                  {/* Confidence */}
 
                   <div className="mt-6 flex items-center justify-between">
 
                     <span
                       className="
                         text-[11px]
-
                         uppercase
-
                         tracking-[0.18em]
-
                         text-white/45
                       "
                     >
@@ -334,19 +293,15 @@ export default function ForecastTimeline() {
                     <span
                       className="
                         rounded-full
-
                         bg-green-500/15
-
                         px-3
                         py-1
-
                         text-xs
                         font-bold
-
                         text-green-300
                       "
                     >
-                      {item.confidence}
+                      {item.confidence}%
                     </span>
 
                   </div>
@@ -358,11 +313,8 @@ export default function ForecastTimeline() {
                     <span
                       className="
                         text-[11px]
-
                         uppercase
-
                         tracking-[0.18em]
-
                         text-white/45
                       "
                     >
@@ -372,15 +324,11 @@ export default function ForecastTimeline() {
                     <span
                       className="
                         rounded-full
-
                         bg-cyan-500/15
-
                         px-3
                         py-1
-
                         text-xs
                         font-bold
-
                         text-cyan-300
                       "
                     >
@@ -389,18 +337,14 @@ export default function ForecastTimeline() {
 
                   </div>
 
-                  {/* Mini Progress */}
+                  {/* Progress */}
 
                   <div
                     className="
                       mt-6
-
                       h-[4px]
-
                       overflow-hidden
-
                       rounded-full
-
                       bg-white/10
                     "
                   >
@@ -410,7 +354,10 @@ export default function ForecastTimeline() {
                         width: 0,
                       }}
                       whileInView={{
-                        width: `${88 + index * 2}%`,
+                        width: `${Math.min(
+                          98,
+                          88 + index * 2
+                        )}%`,
                       }}
                       viewport={{ once: true }}
                       transition={{
@@ -419,9 +366,7 @@ export default function ForecastTimeline() {
                       }}
                       className="
                         h-full
-
                         rounded-full
-
                         bg-gradient-to-r
                         from-green-400
                         via-cyan-400
@@ -442,7 +387,6 @@ export default function ForecastTimeline() {
         </div>
 
       </div>
-
     </motion.section>
   );
 }

@@ -1,5 +1,7 @@
+
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import {
   Search,
@@ -7,7 +9,41 @@ import {
   Sparkles,
 } from "lucide-react";
 
-export default function MarketFilterBar() {
+interface MarketFilterBarProps {
+  onAnalyze: (
+    crop: string,
+    state: string,
+    district: string
+  ) => void;
+}
+
+export default function MarketFilterBar({
+  onAnalyze,
+}: MarketFilterBarProps) {
+  const [crop, setCrop] = useState("soybean");
+  const [state, setState] = useState("Maharashtra");
+  const [district, setDistrict] = useState("Pune");
+
+  const handleReset = () => {
+    setCrop("soybean");
+    setState("Maharashtra");
+    setDistrict("Pune");
+  };
+
+  const handleAnalyze = () => {
+    const trimmedCrop = crop.trim();
+
+    if (!trimmedCrop) {
+      return;
+    }
+
+    onAnalyze(
+      trimmedCrop,
+      state,
+      district
+    );
+  };
+
   return (
     <motion.section
       initial={{ opacity: 0, y: 35 }}
@@ -17,27 +53,43 @@ export default function MarketFilterBar() {
       className="
         relative
         overflow-hidden
-
         rounded-[32px]
-
         border
         border-white/10
-
         bg-white/[0.05]
-
         backdrop-blur-3xl
-
         p-8
       "
     >
-
       {/* Background Glow */}
 
       <div className="pointer-events-none absolute inset-0">
 
-        <div className="absolute -left-24 top-0 h-[220px] w-[220px] rounded-full bg-green-500/10 blur-[120px]" />
+        <div
+          className="
+            absolute
+            -left-24
+            top-0
+            h-[220px]
+            w-[220px]
+            rounded-full
+            bg-green-500/10
+            blur-[120px]
+          "
+        />
 
-        <div className="absolute right-0 bottom-0 h-[220px] w-[220px] rounded-full bg-cyan-500/10 blur-[120px]" />
+        <div
+          className="
+            absolute
+            right-0
+            bottom-0
+            h-[220px]
+            w-[220px]
+            rounded-full
+            bg-cyan-500/10
+            blur-[120px]
+          "
+        />
 
       </div>
 
@@ -54,14 +106,10 @@ export default function MarketFilterBar() {
                 inline-flex
                 items-center
                 gap-2
-
                 rounded-full
-
                 border
                 border-cyan-400/20
-
                 bg-cyan-500/10
-
                 px-4
                 py-2
               "
@@ -78,7 +126,6 @@ export default function MarketFilterBar() {
                   font-semibold
                   uppercase
                   tracking-[0.22em]
-
                   text-cyan-200
                 "
               >
@@ -90,10 +137,8 @@ export default function MarketFilterBar() {
             <h2
               className="
                 mt-5
-
                 text-3xl
                 font-bold
-
                 text-white
               "
             >
@@ -103,7 +148,6 @@ export default function MarketFilterBar() {
             <p
               className="
                 mt-2
-
                 text-white/60
               "
             >
@@ -115,25 +159,20 @@ export default function MarketFilterBar() {
           {/* Reset Button */}
 
           <button
+            type="button"
+            onClick={handleReset}
             className="
               flex
               items-center
               gap-3
-
               rounded-2xl
-
               border
               border-white/10
-
               bg-white/[0.05]
-
               px-6
               py-3
-
               text-white/80
-
               transition
-
               hover:bg-white/[0.08]
             "
           >
@@ -155,14 +194,10 @@ export default function MarketFilterBar() {
               flex
               items-center
               gap-4
-
               rounded-2xl
-
               border
               border-white/10
-
               bg-black/20
-
               px-5
               py-4
             "
@@ -175,16 +210,14 @@ export default function MarketFilterBar() {
 
             <input
               type="text"
+              value={crop}
+              onChange={(e) => setCrop(e.target.value)}
               placeholder="Search crop..."
               className="
                 w-full
-
                 bg-transparent
-
                 text-white
-
                 placeholder:text-white/40
-
                 outline-none
               "
             />
@@ -192,13 +225,16 @@ export default function MarketFilterBar() {
           </div>
 
         </div>
-                {/* Filter Grid */}
+
+        {/* Filter Grid */}
 
         <div className="mt-8 grid gap-5 lg:grid-cols-3">
 
           {/* State */}
 
           <select
+            value={state}
+            onChange={(e) => setState(e.target.value)}
             className="
               rounded-2xl
               border
@@ -213,15 +249,42 @@ export default function MarketFilterBar() {
               hover:border-green-400/30
             "
           >
-            <option className="bg-[#101820]">Maharashtra</option>
-            <option className="bg-[#101820]">Karnataka</option>
-            <option className="bg-[#101820]">Gujarat</option>
-            <option className="bg-[#101820]">Punjab</option>
+
+            <option
+              value="Maharashtra"
+              className="bg-[#101820]"
+            >
+              Maharashtra
+            </option>
+
+            <option
+              value="Karnataka"
+              className="bg-[#101820]"
+            >
+              Karnataka
+            </option>
+
+            <option
+              value="Gujarat"
+              className="bg-[#101820]"
+            >
+              Gujarat
+            </option>
+
+            <option
+              value="Punjab"
+              className="bg-[#101820]"
+            >
+              Punjab
+            </option>
+
           </select>
 
           {/* District */}
 
           <select
+            value={district}
+            onChange={(e) => setDistrict(e.target.value)}
             className="
               rounded-2xl
               border
@@ -236,15 +299,41 @@ export default function MarketFilterBar() {
               hover:border-green-400/30
             "
           >
-            <option className="bg-[#101820]">Pune</option>
-            <option className="bg-[#101820]">Nashik</option>
-            <option className="bg-[#101820]">Nagpur</option>
-            <option className="bg-[#101820]">Kolhapur</option>
+
+            <option
+              value="Pune"
+              className="bg-[#101820]"
+            >
+              Pune
+            </option>
+
+            <option
+              value="Nashik"
+              className="bg-[#101820]"
+            >
+              Nashik
+            </option>
+
+            <option
+              value="Nagpur"
+              className="bg-[#101820]"
+            >
+              Nagpur
+            </option>
+
+            <option
+              value="Kolhapur"
+              className="bg-[#101820]"
+            >
+              Kolhapur
+            </option>
+
           </select>
 
           {/* Market */}
 
           <select
+            defaultValue="All Mandis"
             className="
               rounded-2xl
               border
@@ -259,15 +348,41 @@ export default function MarketFilterBar() {
               hover:border-green-400/30
             "
           >
-            <option className="bg-[#101820]">All Mandis</option>
-            <option className="bg-[#101820]">Pune APMC</option>
-            <option className="bg-[#101820]">Nashik APMC</option>
-            <option className="bg-[#101820]">Mumbai Market</option>
+
+            <option
+              value="All Mandis"
+              className="bg-[#101820]"
+            >
+              All Mandis
+            </option>
+
+            <option
+              value="Pune APMC"
+              className="bg-[#101820]"
+            >
+              Pune APMC
+            </option>
+
+            <option
+              value="Nashik APMC"
+              className="bg-[#101820]"
+            >
+              Nashik APMC
+            </option>
+
+            <option
+              value="Mumbai Market"
+              className="bg-[#101820]"
+            >
+              Mumbai Market
+            </option>
+
           </select>
 
           {/* Category */}
 
           <select
+            defaultValue="Vegetables"
             className="
               rounded-2xl
               border
@@ -282,15 +397,41 @@ export default function MarketFilterBar() {
               hover:border-green-400/30
             "
           >
-            <option className="bg-[#101820]">Vegetables</option>
-            <option className="bg-[#101820]">Fruits</option>
-            <option className="bg-[#101820]">Cereals</option>
-            <option className="bg-[#101820]">Pulses</option>
+
+            <option
+              value="Vegetables"
+              className="bg-[#101820]"
+            >
+              Vegetables
+            </option>
+
+            <option
+              value="Fruits"
+              className="bg-[#101820]"
+            >
+              Fruits
+            </option>
+
+            <option
+              value="Cereals"
+              className="bg-[#101820]"
+            >
+              Cereals
+            </option>
+
+            <option
+              value="Pulses"
+              className="bg-[#101820]"
+            >
+              Pulses
+            </option>
+
           </select>
 
           {/* Price Range */}
 
           <select
+            defaultValue="₹0 - ₹500"
             className="
               rounded-2xl
               border
@@ -305,10 +446,35 @@ export default function MarketFilterBar() {
               hover:border-green-400/30
             "
           >
-            <option className="bg-[#101820]">₹0 - ₹500</option>
-            <option className="bg-[#101820]">₹500 - ₹1000</option>
-            <option className="bg-[#101820]">₹1000 - ₹2000</option>
-            <option className="bg-[#101820]">₹2000+</option>
+
+            <option
+              value="₹0 - ₹500"
+              className="bg-[#101820]"
+            >
+              ₹0 - ₹500
+            </option>
+
+            <option
+              value="₹500 - ₹1000"
+              className="bg-[#101820]"
+            >
+              ₹500 - ₹1000
+            </option>
+
+            <option
+              value="₹1000 - ₹2000"
+              className="bg-[#101820]"
+            >
+              ₹1000 - ₹2000
+            </option>
+
+            <option
+              value="₹2000+"
+              className="bg-[#101820]"
+            >
+              ₹2000+
+            </option>
+
           </select>
 
           {/* Date */}
@@ -331,9 +497,23 @@ export default function MarketFilterBar() {
           />
 
         </div>
-                {/* Bottom Action Bar */}
 
-        <div className="mt-10 flex flex-col items-center justify-between gap-5 border-t border-white/10 pt-8 lg:flex-row">
+        {/* Bottom Action Bar */}
+
+        <div
+          className="
+            mt-10
+            flex
+            flex-col
+            items-center
+            justify-between
+            gap-5
+            border-t
+            border-white/10
+            pt-8
+            lg:flex-row
+          "
+        >
 
           <p className="text-white/55">
             AI analyzes market trends, demand, arrivals and historical prices
@@ -341,6 +521,8 @@ export default function MarketFilterBar() {
           </p>
 
           <motion.button
+            type="button"
+            onClick={handleAnalyze}
             whileHover={{
               scale: 1.03,
               boxShadow: "0 0 35px rgba(34,197,94,.35)",
@@ -351,24 +533,17 @@ export default function MarketFilterBar() {
             className="
               relative
               overflow-hidden
-
               rounded-2xl
-
               border
               border-green-400/20
-
               bg-gradient-to-r
               from-green-500/20
               via-emerald-500/20
               to-cyan-500/20
-
               px-8
               py-4
-
               font-semibold
-
               text-white
-
               backdrop-blur-xl
             "
           >
@@ -377,18 +552,16 @@ export default function MarketFilterBar() {
 
             <div
               className="
+                pointer-events-none
                 absolute
                 inset-0
-
                 bg-gradient-to-r
                 from-green-400/10
                 to-cyan-400/10
-
                 opacity-0
                 transition
                 duration-500
-
-                hover:opacity-100
+                group-hover:opacity-100
               "
             />
 
@@ -412,3 +585,4 @@ export default function MarketFilterBar() {
     </motion.section>
   );
 }
+
