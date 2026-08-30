@@ -17,6 +17,7 @@ from backend.routes.crop import router as crop_router
 from backend.routes.market import router as market_router
 from backend.routes.news import router as news_router
 from backend.routes.assistant import router as assistant_router
+from backend.routes.disease import router as disease_router
 
 # =========================================================
 # FASTAPI APPLICATION
@@ -50,7 +51,7 @@ app.include_router(crop_router)
 app.include_router(market_router)
 app.include_router(news_router)
 app.include_router(assistant_router)
-
+app.include_router(disease_router)
 # =========================================================
 # ROOT
 # =========================================================
